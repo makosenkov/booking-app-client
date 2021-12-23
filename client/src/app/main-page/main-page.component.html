@@ -1,0 +1,83 @@
+<div class="main-container">
+  <div class="rooms-booking">
+    <h3>Поиск по датам</h3>
+    <div class="toolbar">
+      <mat-form-field appearance="fill" class="date-interval-form-field">
+        <mat-label>Выберите время заезда и выезда</mat-label>
+        <mat-date-range-input [rangePicker]="rangePicker">
+          <input matStartDate [(ngModel)]="startDate" placeholder="Дата заезда">
+          <input matEndDate [(ngModel)]="endDate" placeholder="Дата выезда">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
+        <mat-date-range-picker #rangePicker>
+          <mat-date-range-picker-actions>
+            <button mat-button matDateRangePickerCancel>Отменить</button>
+            <button mat-raised-button color="primary" matDateRangePickerApply>Выбрать</button>
+          </mat-date-range-picker-actions>
+        </mat-date-range-picker>
+      </mat-form-field>
+      <div class="find-btn-container">
+        <button mat-raised-button [disabled]="!datesAreValid()" (click)="findAvailableRooms()">
+          Найти доступные номера
+        </button>
+      </div>
+    </div>
+    <div class="rooms-list" *ngIf="availableRooms.length > 0">
+      <mat-divider [vertical]="false"></mat-divider>
+      <mat-selection-list class="room-selection-list" #rooms [multiple]="false"
+                          (selectionChange)="selectionChange(rooms.selectedOptions.selected[0]?.value)">
+        <div mat-subheader>Доступные номера</div>
+        <mat-list-option class="list-item" *ngFor="let room of availableRooms" [value]="room">
+          {{room.name}}
+        </mat-list-option>
+        <mat-divider></mat-divider>
+      </mat-selection-list>
+      <div class="book-btn-container">
+        <button mat-raised-button class="book-btn" [disabled]="!datesAreValid()" (click)="bookSelectedRoom()">
+          Забронировать выбранный номер
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="rooms-availability">
+    <h3>Поиск по номерам</h3>
+    <mat-selection-list class="room-selection-list" #rooms [multiple]="false"
+                        (selectionChange)="selectionChangeAvailability(rooms.selectedOptions.selected[0]?.value)">
+      <div mat-subheader>Выберите интересующий вас номер</div>
+      <mat-list-option class="list-item" *ngFor="let room of allRooms" [value]="room">
+        {{room.name}}
+      </mat-list-option>
+      <mat-divider></mat-divider>
+    </mat-selection-list>
+    <div class="toolbar">
+      <mat-form-field appearance="fill" class="date-interval-form-field">
+        <mat-label>Выберите время заезда и выезда</mat-label>
+        <mat-date-range-input [rangePicker]="rangePicker1">
+          <input matStartDate [(ngModel)]="startDateAvailable" placeholder="Дата заезда">
+          <input matEndDate [(ngModel)]="endDateAvailable" placeholder="Дата выезда">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="rangePicker1"></mat-datepicker-toggle>
+        <mat-date-range-picker #rangePicker1>
+          <mat-date-range-picker-actions>
+            <button mat-button matDateRangePickerCancel>Отменить</button>
+            <button mat-raised-button color="primary" matDateRangePickerApply>Выбрать</button>
+          </mat-date-range-picker-actions>
+        </mat-date-range-picker>
+      </mat-form-field>
+      <div class="find-btn-container">
+        <button mat-raised-button [disabled]="!availabilityDatesAreValid() || !selectedRoomAvailability.id"
+                (click)="roomIsAvailable()">
+          Проверить доступность для бронирования
+        </button>
+      </div>
+    </div>
+    <div class="availability-checked">
+      <h4 *ngIf="isAvailable && isChecked">Номер доступен</h4>
+      <h4 *ngIf="!isAvailable && isChecked">Номер недоступен</h4>
+    </div>
+  </div>
+</div>
+
+
